@@ -1,10 +1,29 @@
 <resources>
     <string name="app_name">ProyectoIntegrador</string>
 
+    <!-- Launcher / Menú Principal Master -->
+    <string name="launcher_title">Panel Principal - Menú Master</string>
+    <string name="launcher_subtitle">Gestión de Llaves y Control de Seguridad Escolar</string>
+    <string name="launcher_sec_title">Pantallas del Sistema</string>
+    <string name="launcher_screen1_title">1. Autenticación (Login)</string>
+    <string name="launcher_screen1_desc">Acceso y validación de credenciales del personal</string>
+    <string name="launcher_screen2_title">2. Panel Principal y Consulta de Llaves</string>
+    <string name="launcher_screen2_desc">Rejilla de disponibilidad de llaves del centro</string>
+    <string name="launcher_screen3_title">3. Préstamos Activos y Devolución</string>
+    <string name="launcher_screen3_desc">Fichas de llaves prestadas a docentes</string>
+    <string name="launcher_screen4_title">4. Búsqueda y Lectura NFC</string>
+    <string name="launcher_screen4_desc">Simulación de escaneo de tag NFC de aula</string>
+    <string name="launcher_screen5_title">5. Reporte de Incidencias</string>
+    <string name="launcher_screen5_desc">Formulario de registro de averías o pérdidas (Operativo)</string>
+
+    <string name="launcher_tag_active">OPERATIVA</string>
+    <string name="launcher_tag_pending">PRÓXIMAMENTE</string>
+    <string name="launcher_snackbar_pending">Esta pantalla estará disponible en la siguiente versión</string>
+
     <!-- Pantalla 5: Reporte de Incidencias -->
     <string name="incidencia_title">Reporte de Incidencias</string>
     <string name="incidencia_subtitle">Formulario de alta de desperfectos y pérdidas en llaves</string>
-    <string name="cd_back">Volver a la pantalla anterior</string>
+    <string name="cd_back">Volver al menú principal</string>
     <string name="cd_refresh">Limpiar todo el formulario</string>
     <string name="cd_info">Información sobre el reporte de incidencias</string>
 
