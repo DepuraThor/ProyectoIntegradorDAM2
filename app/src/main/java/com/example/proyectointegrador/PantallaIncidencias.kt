@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,29 +14,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Help
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Key
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuAnchorType
@@ -53,6 +50,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -64,6 +62,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -73,12 +72,7 @@ import com.example.proyectointegrador.ui.theme.ProyectoIntegradorTheme
 import kotlinx.coroutines.launch
 
 /**
- * Pantalla 5: Reporte de Incidencias ("pantallaincidencia")
- * Cumple con los criterios de:
- * - UD 2.4: Estructuras de Diseño con Layouts y Material 3 (Scaffold, TopAppBar, PaddingValues, Layouts limpios)
- * - UD 3.1: Ciclo de Vida de la Activity frente a Recomposición
- * - UD 3.2: Gestión del Estado Local con remember y rememberSaveable (persistencia ante rotación)
- * - UI Proyecto Integrador: 100% de los textos externalizados en res/values/strings.xml
+ * Pantalla 5: Reporte de Incidencias ("pantallaincidencia") - Diseño Oficial U-TAD
  */
 class PantallaIncidencias : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -99,8 +93,6 @@ class PantallaIncidencias : ComponentActivity() {
 fun PantallaIncidenciasScreen(
     onBackClick: () -> Unit = {}
 ) {
-    // ESTADO LOCAL DE LA PANTALLA PERSISTIDO CON rememberSaveable (UD 3.2)
-    // Permite sobrevivir recomposiciones y cambios de configuración (ej. rotación de pantalla - UD 3.1)
     var selectedKeyRoom by rememberSaveable { mutableStateOf("") }
     var selectedIncidentType by rememberSaveable { mutableStateOf("") }
     var descriptionText by rememberSaveable { mutableStateOf("") }
@@ -118,7 +110,6 @@ fun PantallaIncidenciasScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    // Opciones de aulas/llaves cargadas desde recursos (strings.xml)
     val keyRoomOptions = listOf(
         stringResource(R.string.incidencia_opt_key1),
         stringResource(R.string.incidencia_opt_key2),
@@ -127,7 +118,6 @@ fun PantallaIncidenciasScreen(
         stringResource(R.string.incidencia_opt_key5)
     )
 
-    // Opciones de tipos de incidencias cargadas desde recursos (strings.xml)
     val incidentTypeOptions = listOf(
         stringResource(R.string.incidencia_opt_type1),
         stringResource(R.string.incidencia_opt_type2),
@@ -136,7 +126,6 @@ fun PantallaIncidenciasScreen(
         stringResource(R.string.incidencia_opt_type5)
     )
 
-    // Prioridades disponibles
     val priorityOptions = listOf(
         stringResource(R.string.incidencia_prio_low),
         stringResource(R.string.incidencia_prio_medium),
@@ -147,19 +136,17 @@ fun PantallaIncidenciasScreen(
     val snackbarSuccessMsg = stringResource(R.string.incidencia_snackbar_success)
     val snackbarErrorMsg = stringResource(R.string.incidencia_snackbar_error)
 
-    // Validación del formulario
     val isFormValid = selectedKeyRoom.isNotBlank() &&
             selectedIncidentType.isNotBlank() &&
             descriptionText.isNotBlank() &&
             reporterName.isNotBlank()
 
-    // Función para resetear el formulario
     fun resetForm() {
         selectedKeyRoom = ""
         selectedIncidentType = ""
         descriptionText = ""
         reporterName = ""
-        priorityLevel = priorityOptions[1] // "Media" por defecto
+        priorityLevel = priorityOptions[1]
         isPhysicalLoss = false
         hasSubmittedAttempt = false
     }
@@ -168,16 +155,41 @@ fun PantallaIncidenciasScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = stringResource(R.string.incidencia_title),
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = stringResource(R.string.app_name),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(
+                                    color = MaterialTheme.colorScheme.primaryContainer,
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "RR",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(R.string.cd_back)
+                            contentDescription = stringResource(R.string.cd_back),
+                            tint = MaterialTheme.colorScheme.primary
                         )
                     }
                 },
@@ -196,378 +208,309 @@ fun PantallaIncidenciasScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             )
         },
-        snackbarHost = { SnackbarHost(snackbarHostState) }
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
-        // GESTIÓN OBLIGATORIA DE PaddingValues HEREDADAS DEL SCAFFOLD (UD 2.4)
-        // Evita colisiones con las barras del sistema operativo
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 24.dp)
                 .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // TARJETA CABECERA INFORMATIVA
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Build,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.padding(end = 12.dp)
-                    )
-                    Column {
-                        Text(
-                            text = stringResource(R.string.incidencia_title),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = stringResource(R.string.incidencia_subtitle),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+            // TITULO DE PANTALLA U-TAD (28sp Bold) Y SUBTÍTULO
+            Column {
+                Text(
+                    text = stringResource(R.string.incidencia_title),
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = stringResource(R.string.incidencia_subtitle),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
 
             // SECCIÓN 1: SELECCIÓN DE AULA / LLAVE
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.incidencia_sec_key_title),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedKeyDropdown,
+                    onExpandedChange = { expandedKeyDropdown = !expandedKeyDropdown },
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Key,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.incidencia_sec_key_title),
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    ExposedDropdownMenuBox(
-                        expanded = expandedKeyDropdown,
-                        onExpandedChange = { expandedKeyDropdown = !expandedKeyDropdown },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        OutlinedTextField(
-                            value = selectedKeyRoom,
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text(stringResource(R.string.incidencia_label_key)) },
-                            placeholder = { Text(stringResource(R.string.incidencia_placeholder_key)) },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedKeyDropdown) },
-                            isError = hasSubmittedAttempt && selectedKeyRoom.isBlank(),
-                            supportingText = {
-                                if (hasSubmittedAttempt && selectedKeyRoom.isBlank()) {
-                                    Text(
-                                        text = stringResource(R.string.incidencia_error_key_empty),
-                                        color = MaterialTheme.colorScheme.error
-                                    )
-                                }
-                            },
-                            modifier = Modifier
-                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                                .fillMaxWidth()
-                        )
-
-                        ExposedDropdownMenu(
-                            expanded = expandedKeyDropdown,
-                            onDismissRequest = { expandedKeyDropdown = false }
-                        ) {
-                            keyRoomOptions.forEach { option ->
-                                DropdownMenuItem(
-                                    text = { Text(option) },
-                                    onClick = {
-                                        selectedKeyRoom = option
-                                        expandedKeyDropdown = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            // SECCIÓN 2: CLASIFICACIÓN DE LA INCIDENCIA Y PRIORIDAD
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Warning,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.incidencia_sec_type_title),
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    // Selector desplegable de Tipo
-                    ExposedDropdownMenuBox(
-                        expanded = expandedTypeDropdown,
-                        onExpandedChange = { expandedTypeDropdown = !expandedTypeDropdown },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        OutlinedTextField(
-                            value = selectedIncidentType,
-                            onValueChange = {},
-                            readOnly = true,
-                            label = { Text(stringResource(R.string.incidencia_label_type)) },
-                            placeholder = { Text(stringResource(R.string.incidencia_placeholder_type)) },
-                            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTypeDropdown) },
-                            isError = hasSubmittedAttempt && selectedIncidentType.isBlank(),
-                            supportingText = {
-                                if (hasSubmittedAttempt && selectedIncidentType.isBlank()) {
-                                    Text(
-                                        text = stringResource(R.string.incidencia_error_type_empty),
-                                        color = MaterialTheme.colorScheme.error
-                                    )
-                                }
-                            },
-                            modifier = Modifier
-                                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
-                                .fillMaxWidth()
-                        )
-
-                        ExposedDropdownMenu(
-                            expanded = expandedTypeDropdown,
-                            onDismissRequest = { expandedTypeDropdown = false }
-                        ) {
-                            incidentTypeOptions.forEach { option ->
-                                DropdownMenuItem(
-                                    text = { Text(option) },
-                                    onClick = {
-                                        selectedIncidentType = option
-                                        expandedTypeDropdown = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-
-                    // Selector Chips de Prioridad
-                    Text(
-                        text = stringResource(R.string.incidencia_label_priority),
-                        style = MaterialTheme.typography.bodyMedium,
-                        fontWeight = FontWeight.Medium
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        priorityOptions.forEach { priority ->
-                            val isSelected = priorityLevel == priority
-                            FilterChip(
-                                selected = isSelected,
-                                onClick = { priorityLevel = priority },
-                                label = {
-                                    Text(
-                                        text = priority,
-                                        style = MaterialTheme.typography.labelMedium
-                                    )
-                                },
-                                leadingIcon = if (isSelected) {
-                                    {
-                                        Icon(
-                                            imageVector = Icons.Default.Check,
-                                            contentDescription = null,
-                                            modifier = Modifier.padding(end = 2.dp)
-                                        )
-                                    }
-                                } else null,
-                                colors = FilterChipDefaults.filterChipColors(
-                                    selectedContainerColor = when (priority) {
-                                        stringResource(R.string.incidencia_prio_urgent) -> MaterialTheme.colorScheme.errorContainer
-                                        stringResource(R.string.incidencia_prio_high) -> MaterialTheme.colorScheme.tertiaryContainer
-                                        else -> MaterialTheme.colorScheme.primaryContainer
-                                    }
-                                )
-                            )
-                        }
-                    }
-
-                    // Switch para Pérdida Física / Cambio Urgente
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = stringResource(R.string.incidencia_switch_loss),
-                            style = MaterialTheme.typography.bodyMedium,
-                            modifier = Modifier.weight(1f)
-                        )
-                        Switch(
-                            checked = isPhysicalLoss,
-                            onCheckedChange = { isPhysicalLoss = it }
-                        )
-                    }
-                }
-            }
-
-            // SECCIÓN 3: DESCRIPCIÓN DETALLADA
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Description,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.incidencia_sec_desc_title),
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
                     OutlinedTextField(
-                        value = descriptionText,
-                        onValueChange = { descriptionText = it },
-                        label = { Text(stringResource(R.string.incidencia_label_desc)) },
-                        placeholder = { Text(stringResource(R.string.incidencia_placeholder_desc)) },
-                        minLines = 3,
-                        maxLines = 5,
-                        isError = hasSubmittedAttempt && descriptionText.isBlank(),
+                        value = selectedKeyRoom,
+                        onValueChange = {},
+                        readOnly = true,
+                        placeholder = { Text(stringResource(R.string.incidencia_placeholder_key)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedKeyDropdown) },
+                        isError = hasSubmittedAttempt && selectedKeyRoom.isBlank(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
                         supportingText = {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                if (hasSubmittedAttempt && descriptionText.isBlank()) {
-                                    Text(
-                                        text = stringResource(R.string.incidencia_error_desc_empty),
-                                        color = MaterialTheme.colorScheme.error
-                                    )
-                                } else {
-                                    Spacer(modifier = Modifier.width(1.dp))
-                                }
-                                Text(text = "${descriptionText.length} / 250")
-                            }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-
-            // SECCIÓN 4: DATOS DEL REPORTANTE (DOCENTE)
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
-                        Text(
-                            text = stringResource(R.string.incidencia_sec_reporter_title),
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-
-                    OutlinedTextField(
-                        value = reporterName,
-                        onValueChange = { reporterName = it },
-                        label = { Text(stringResource(R.string.incidencia_label_reporter)) },
-                        placeholder = { Text(stringResource(R.string.incidencia_placeholder_reporter)) },
-                        singleLine = true,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Person,
-                                contentDescription = null
-                            )
-                        },
-                        isError = hasSubmittedAttempt && reporterName.isBlank(),
-                        supportingText = {
-                            if (hasSubmittedAttempt && reporterName.isBlank()) {
+                            if (hasSubmittedAttempt && selectedKeyRoom.isBlank()) {
                                 Text(
-                                    text = stringResource(R.string.incidencia_error_reporter_empty),
+                                    text = stringResource(R.string.incidencia_error_key_empty),
                                     color = MaterialTheme.colorScheme.error
                                 )
                             }
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                            .fillMaxWidth()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expandedKeyDropdown,
+                        onDismissRequest = { expandedKeyDropdown = false }
+                    ) {
+                        keyRoomOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    selectedKeyRoom = option
+                                    expandedKeyDropdown = false
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+
+            // SECCIÓN 2: TIPO DE INCIDENCIA
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.incidencia_sec_type_title),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedTypeDropdown,
+                    onExpandedChange = { expandedTypeDropdown = !expandedTypeDropdown },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    OutlinedTextField(
+                        value = selectedIncidentType,
+                        onValueChange = {},
+                        readOnly = true,
+                        placeholder = { Text(stringResource(R.string.incidencia_placeholder_type)) },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTypeDropdown) },
+                        isError = hasSubmittedAttempt && selectedIncidentType.isBlank(),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = TextFieldDefaults.colors(
+                            focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                            unfocusedIndicatorColor = Color.Transparent
+                        ),
+                        supportingText = {
+                            if (hasSubmittedAttempt && selectedIncidentType.isBlank()) {
+                                Text(
+                                    text = stringResource(R.string.incidencia_error_type_empty),
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            }
+                        },
+                        modifier = Modifier
+                            .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable)
+                            .fillMaxWidth()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expandedTypeDropdown,
+                        onDismissRequest = { expandedTypeDropdown = false }
+                    ) {
+                        incidentTypeOptions.forEach { option ->
+                            DropdownMenuItem(
+                                text = { Text(option) },
+                                onClick = {
+                                    selectedIncidentType = option
+                                    expandedTypeDropdown = false
+                                }
+                            )
+                        }
+                    }
+                }
+
+                // Chips de Prioridad U-TAD
+                Text(
+                    text = stringResource(R.string.incidencia_label_priority),
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Medium
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    priorityOptions.forEach { priority ->
+                        val isSelected = priorityLevel == priority
+                        FilterChip(
+                            selected = isSelected,
+                            onClick = { priorityLevel = priority },
+                            label = {
+                                Text(
+                                    text = priority,
+                                    style = MaterialTheme.typography.labelMedium
+                                )
+                            },
+                            leadingIcon = if (isSelected) {
+                                {
+                                    Icon(
+                                        imageVector = Icons.Default.Check,
+                                        contentDescription = null,
+                                        modifier = Modifier.padding(end = 2.dp)
+                                    )
+                                }
+                            } else null,
+                            colors = FilterChipDefaults.filterChipColors(
+                                selectedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                                selectedLabelColor = MaterialTheme.colorScheme.primary,
+                                containerColor = MaterialTheme.colorScheme.surfaceVariant
+                            )
+                        )
+                    }
+                }
+
+                // Switch
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        text = stringResource(R.string.incidencia_switch_loss),
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Switch(
+                        checked = isPhysicalLoss,
+                        onCheckedChange = { isPhysicalLoss = it }
                     )
                 }
             }
 
-            // SECCIÓN 5: BOTONES DE ACCIÓN (LIMPIAR / ENVIAR)
+            // SECCIÓN 3: DESCRIPCIÓN DETALLADA U-TAD
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.incidencia_sec_desc_title),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+
+                OutlinedTextField(
+                    value = descriptionText,
+                    onValueChange = { descriptionText = it },
+                    placeholder = { Text(stringResource(R.string.incidencia_placeholder_desc)) },
+                    minLines = 4,
+                    maxLines = 6,
+                    isError = hasSubmittedAttempt && descriptionText.isBlank(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    supportingText = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            if (hasSubmittedAttempt && descriptionText.isBlank()) {
+                                Text(
+                                    text = stringResource(R.string.incidencia_error_desc_empty),
+                                    color = MaterialTheme.colorScheme.error
+                                )
+                            } else {
+                                Text(
+                                    text = "Revisa los datos antes de enviar.",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            Text(
+                                text = "${descriptionText.length} / 500",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // SECCIÓN 4: DATOS DEL DOCENTE
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(
+                    text = stringResource(R.string.incidencia_sec_reporter_title),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+
+                OutlinedTextField(
+                    value = reporterName,
+                    onValueChange = { reporterName = it },
+                    placeholder = { Text(stringResource(R.string.incidencia_placeholder_reporter)) },
+                    singleLine = true,
+                    isError = hasSubmittedAttempt && reporterName.isBlank(),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
+                        focusedIndicatorColor = MaterialTheme.colorScheme.primary,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    supportingText = {
+                        if (hasSubmittedAttempt && reporterName.isBlank()) {
+                            Text(
+                                text = stringResource(R.string.incidencia_error_reporter_empty),
+                                color = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            // BOTÓN PRINCIPAL U-TAD (Fondo Azul #2563EB, 16sp Bold)
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // Botón Limpiar
                 OutlinedButton(
                     onClick = { resetForm() },
+                    shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.weight(1f)
                 ) {
                     Icon(
@@ -578,7 +521,6 @@ fun PantallaIncidenciasScreen(
                     Text(text = stringResource(R.string.incidencia_btn_clear))
                 }
 
-                // Botón Enviar
                 Button(
                     onClick = {
                         hasSubmittedAttempt = true
@@ -593,24 +535,31 @@ fun PantallaIncidenciasScreen(
                             }
                         }
                     },
-                    modifier = Modifier.weight(1f),
+                    shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primary
-                    )
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary
+                    ),
+                    modifier = Modifier
+                        .weight(2f)
+                        .height(52.dp)
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,
                         contentDescription = null,
-                        modifier = Modifier.padding(end = 4.dp)
+                        modifier = Modifier.padding(end = 8.dp)
                     )
-                    Text(text = stringResource(R.string.incidencia_btn_submit))
+                    Text(
+                        text = stringResource(R.string.incidencia_btn_submit),
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
         }
 
-        // DIÁLOGO DE CONFIRMACIÓN DE ÉXITO
+        // DIÁLOGOS
         if (showSuccessDialog) {
             AlertDialog(
                 onDismissRequest = { showSuccessDialog = false },
@@ -630,42 +579,17 @@ fun PantallaIncidenciasScreen(
                     )
                 },
                 text = {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(
                             text = stringResource(R.string.incidencia_dialog_msg_prefix),
                             style = MaterialTheme.typography.bodyMedium
                         )
                         Spacer(modifier = Modifier.height(4.dp))
-
-                        DetailRow(
-                            label = stringResource(R.string.incidencia_dialog_lbl_room),
-                            value = selectedKeyRoom
-                        )
-                        DetailRow(
-                            label = stringResource(R.string.incidencia_dialog_lbl_type),
-                            value = selectedIncidentType
-                        )
-                        DetailRow(
-                            label = stringResource(R.string.incidencia_dialog_lbl_priority),
-                            value = priorityLevel
-                        )
-                        DetailRow(
-                            label = stringResource(R.string.incidencia_dialog_lbl_reporter),
-                            value = reporterName
-                        )
-                        DetailRow(
-                            label = stringResource(R.string.incidencia_dialog_lbl_urgent),
-                            value = if (isPhysicalLoss)
-                                stringResource(R.string.incidencia_dialog_yes)
-                            else
-                                stringResource(R.string.incidencia_dialog_no)
-                        )
-                        DetailRow(
-                            label = stringResource(R.string.incidencia_dialog_lbl_desc),
-                            value = descriptionText
-                        )
+                        DetailRow(label = stringResource(R.string.incidencia_dialog_lbl_room), value = selectedKeyRoom)
+                        DetailRow(label = stringResource(R.string.incidencia_dialog_lbl_type), value = selectedIncidentType)
+                        DetailRow(label = stringResource(R.string.incidencia_dialog_lbl_priority), value = priorityLevel)
+                        DetailRow(label = stringResource(R.string.incidencia_dialog_lbl_reporter), value = reporterName)
+                        DetailRow(label = stringResource(R.string.incidencia_dialog_lbl_desc), value = descriptionText)
                     }
                 },
                 confirmButton = {
@@ -673,7 +597,8 @@ fun PantallaIncidenciasScreen(
                         onClick = {
                             showSuccessDialog = false
                             resetForm()
-                        }
+                        },
+                        shape = RoundedCornerShape(12.dp)
                     ) {
                         Text(text = stringResource(R.string.incidencia_dialog_confirm))
                     }
@@ -681,7 +606,6 @@ fun PantallaIncidenciasScreen(
             )
         }
 
-        // DIÁLOGO INFORMATIVO SOBRE LA PANTALLA
         if (showInfoDialog) {
             AlertDialog(
                 onDismissRequest = { showInfoDialog = false },
