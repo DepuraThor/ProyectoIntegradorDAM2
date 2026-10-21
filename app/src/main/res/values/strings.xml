@@ -1,16 +1,30 @@
 <resources>
     <string name="app_name">U-tad / Llaves</string>
-    <string name="brand_name">U-tad</string>
-    <string name="brand_subtitle">Gestión de llaves</string>
 
-    <!-- Pantalla de Bienvenida / Acceso -->
-    <string name="welcome_title">Bienvenido</string>
-    <string name="welcome_subtitle">Accede con tu cuenta del centro.</string>
-    <string name="input_email_label">Correo institucional</string>
-    <string name="input_email_placeholder">nombre@u-tad.com</string>
-    <string name="input_password_label">Contraseña</string>
-    <string name="btn_access">Acceder</string>
-    <string name="footer_portal">U-tad · Portal para docentes</string>
+    <!-- Header & Navigation -->
+    <string name="brand_header">U-tad / Llaves</string>
+    <string name="avatar_initials">RR</string>
+    <string name="cd_back">Volver al menú principal</string>
+
+    <!-- Pantalla 5: Reportar Incidencia (Esqueleto Visual) -->
+    <string name="incidencia_title">Reportar incidencia</string>
+    <string name="incidencia_subtitle">Cuéntanos qué ha ocurrido.</string>
+    <string name="incidencia_label_key">Llave o aula</string>
+    <string name="incidencia_value_key">Aula 102 · L-002</string>
+    <string name="incidencia_label_type">Tipo de incidencia</string>
+    <string name="incidencia_type_desperfecto">Desperfecto</string>
+    <string name="incidencia_type_perdida">Pérdida</string>
+    <string name="incidencia_label_desc">Descripción</string>
+    <string name="incidencia_placeholder_desc">Describe el problema de la llave…</string>
+    <string name="incidencia_char_counter">0 / 500 caracteres</string>
+    <string name="incidencia_helper_text">Revisa los datos antes de enviar.</string>
+    <string name="incidencia_btn_submit">Enviar incidencia</string>
+
+    <!-- Barra de Navegación Inferior -->
+    <string name="nav_llaves">Llaves</string>
+    <string name="nav_nfc">NFC</string>
+    <string name="nav_prestamos">Préstamos</string>
+    <string name="nav_incidencias">Incidencias</string>
 
     <!-- Launcher -->
     <string name="launcher_title">Launcher</string>
@@ -20,76 +34,4 @@
     <string name="launcher_screen4_title">4. Búsqueda y Lectura NFC</string>
     <string name="launcher_screen5_title">5. Reporte de Incidencias</string>
     <string name="launcher_snackbar_pending">Esta pantalla estará disponible en la siguiente versión</string>
-
-    <!-- Pantalla 5: Reporte de Incidencias -->
-    <string name="incidencia_title">Reportar incidencia</string>
-    <string name="incidencia_subtitle">Cuéntanos qué ha ocurrido.</string>
-    <string name="cd_back">Volver al menú principal</string>
-    <string name="cd_refresh">Limpiar todo el formulario</string>
-    <string name="cd_info">Información sobre el reporte de incidencias</string>
-
-    <!-- Sección 1: Selección de Aula / Llave -->
-    <string name="incidencia_sec_key_title">Llave o aula</string>
-    <string name="incidencia_label_key">Aula o Llave afectada *</string>
-    <string name="incidencia_placeholder_key">Aula 102 · L-002</string>
-    <string name="incidencia_opt_key1">Aula 101 · L-001</string>
-    <string name="incidencia_opt_key2">Aula 102 · L-002</string>
-    <string name="incidencia_opt_key3">Laboratorio 1 · L-003</string>
-    <string name="incidencia_opt_key4">Laboratorio 2 · L-004</string>
-    <string name="incidencia_opt_key5">Otra / No especificada</string>
-    <string name="incidencia_error_key_empty">Debe seleccionar un aula o llave</string>
-
-    <!-- Sección 2: Clasificación de la Incidencia -->
-    <string name="incidencia_sec_type_title">Tipo de incidencia</string>
-    <string name="incidencia_label_type">Tipo de problema *</string>
-    <string name="incidencia_placeholder_type">Seleccione el tipo de incidencia</string>
-    <string name="incidencia_opt_type1">Desperfecto</string>
-    <string name="incidencia_opt_type2">Pérdida</string>
-    <string name="incidencia_opt_type3">Cerradura atascada</string>
-    <string name="incidencia_opt_type4">Cierre de aula bloqueado</string>
-    <string name="incidencia_opt_type5">Otro desperfecto</string>
-    <string name="incidencia_error_type_empty">Debe seleccionar un tipo de incidencia</string>
-
-    <string name="incidencia_label_priority">Nivel de Prioridad:</string>
-    <string name="incidencia_prio_low">Baja</string>
-    <string name="incidencia_prio_medium">Media</string>
-    <string name="incidencia_prio_high">Alta</string>
-    <string name="incidencia_prio_urgent">Urgente</string>
-
-    <string name="incidencia_switch_loss">Pérdida total (requiere cambio urgente de cerradura)</string>
-
-    <!-- Sección 3: Descripción Detallada -->
-    <string name="incidencia_sec_desc_title">Descripción</string>
-    <string name="incidencia_label_desc">Detalle de la incidencia *</string>
-    <string name="incidencia_placeholder_desc">Describe el problema de la llave…</string>
-    <string name="incidencia_error_desc_empty">La descripción es obligatoria</string>
-
-    <!-- Sección 4: Datos del Reportante -->
-    <string name="incidencia_sec_reporter_title">Datos del docente</string>
-    <string name="incidencia_label_reporter">Nombre o Código de Docente *</string>
-    <string name="incidencia_placeholder_reporter">Ej. Ana García (DOC-102)</string>
-    <string name="incidencia_error_reporter_empty">Ingrese el nombre o código de docente</string>
-
-    <!-- Botones de Acción -->
-    <string name="incidencia_btn_clear">Limpiar</string>
-    <string name="incidencia_btn_submit">Enviar incidencia</string>
-
-    <!-- Diálogos y Feedback -->
-    <string name="incidencia_dialog_title">¡Incidencia Registrada!</string>
-    <string name="incidencia_dialog_msg_prefix">Se ha dado de alta correctamente la incidencia con los siguientes datos:</string>
-    <string name="incidencia_dialog_lbl_room">Aula/Llave:</string>
-    <string name="incidencia_dialog_lbl_type">Tipo de Incidencia:</string>
-    <string name="incidencia_dialog_lbl_priority">Prioridad:</string>
-    <string name="incidencia_dialog_lbl_reporter">Docente / Reportante:</string>
-    <string name="incidencia_dialog_lbl_desc">Descripción:</string>
-    <string name="incidencia_dialog_lbl_urgent">Sustitución Urgente:</string>
-    <string name="incidencia_dialog_yes">Sí (Cambio de cerradura solicitado)</string>
-    <string name="incidencia_dialog_no">No</string>
-    <string name="incidencia_dialog_confirm">Aceptar</string>
-
-    <string name="incidencia_snackbar_success">Incidencia registrada correctamente en el sistema</string>
-    <string name="incidencia_snackbar_error">Por favor, complete todos los campos obligatorios antes de enviar</string>
-    <string name="incidencia_info_dialog_title">Acerca del Reporte de Incidencias</string>
-    <string name="incidencia_info_dialog_msg">Este formulario permite registrar averías, llaves extraviadas o desperfectos en las aulas del centro educativo para su gestión inmediata por parte de Dirección y Mantenimiento.</string>
-    <string name="incidencia_info_dialog_close">Cerrar</string>
 </resources>
