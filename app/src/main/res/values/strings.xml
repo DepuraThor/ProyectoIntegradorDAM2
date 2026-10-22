@@ -6,6 +6,21 @@
     <string name="avatar_initials">RR</string>
     <string name="cd_back">Volver al menú principal</string>
 
+    <!-- Pantalla 2: Consulta de llaves (Esqueleto Visual) -->
+    <string name="consulta_title">Consulta de llaves</string>
+    <string name="consulta_subtitle">Encuentra el aula que necesitas.</string>
+    <string name="consulta_search_hint">Buscar aula o número de llave</string>
+    <string name="consulta_available_count">12</string>
+    <string name="consulta_available_label">Disponibles</string>
+    <string name="consulta_loaned_count">4</string>
+    <string name="consulta_loaned_label">Prestadas</string>
+    <string name="consulta_section">Llaves del centro</string>
+    <string name="key_aula_101">Aula 101</string>
+    <string name="key_aula_102">Aula 102</string>
+    <string name="key_lab_3">Laboratorio 3</string>
+    <string name="status_disponible">Disponible</string>
+    <string name="status_prestada">Prestada</string>
+
     <!-- Pantalla 5: Reportar Incidencia (Esqueleto Visual) -->
     <string name="incidencia_title">Reportar incidencia</string>
     <string name="incidencia_subtitle">Cuéntanos qué ha ocurrido.</string>
