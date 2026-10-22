@@ -149,10 +149,10 @@ fun LoginHeaderScreen(modifier: Modifier = Modifier) {
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = CampoTextoFondo,
                     focusedContainerColor = CampoTextoFondo,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = AzulPrincipal
+                    unfocusedBorderColor = BordeCampo,
+                    focusedBorderColor = AzulPrincipal,
                 ),
-                singleLine = true
+                singleLine = true,
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -161,7 +161,7 @@ fun LoginHeaderScreen(modifier: Modifier = Modifier) {
                 text = "Contraseña",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextoPrincipal
+                color = TextoPrincipal,
             )
             Spacer(modifier = Modifier.height(6.dp))
             OutlinedTextField(
@@ -174,10 +174,10 @@ fun LoginHeaderScreen(modifier: Modifier = Modifier) {
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = CampoTextoFondo,
                     focusedContainerColor = CampoTextoFondo,
-                    unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = AzulPrincipal
+                    unfocusedBorderColor = BordeCampo,
+                    focusedBorderColor = AzulPrincipal,
                 ),
-                singleLine = true
+                singleLine = true,
             )
 
             Spacer(modifier = Modifier.height(12.dp))
