@@ -1,3 +1,37 @@
 <resources>
-    <string name="app_name">ProyectoIntegrador</string>
+    <string name="app_name">U-tad / Llaves</string>
+
+    <!-- Header & Navigation -->
+    <string name="brand_header">U-tad / Llaves</string>
+    <string name="avatar_initials">RR</string>
+    <string name="cd_back">Volver al menú principal</string>
+
+    <!-- Pantalla 5: Reportar Incidencia (Esqueleto Visual) -->
+    <string name="incidencia_title">Reportar incidencia</string>
+    <string name="incidencia_subtitle">Cuéntanos qué ha ocurrido.</string>
+    <string name="incidencia_label_key">Llave o aula</string>
+    <string name="incidencia_value_key">Aula 102 · L-002</string>
+    <string name="incidencia_label_type">Tipo de incidencia</string>
+    <string name="incidencia_type_desperfecto">Desperfecto</string>
+    <string name="incidencia_type_perdida">Pérdida</string>
+    <string name="incidencia_label_desc">Descripción</string>
+    <string name="incidencia_placeholder_desc">Describe el problema de la llave…</string>
+    <string name="incidencia_char_counter">0 / 500 caracteres</string>
+    <string name="incidencia_helper_text">Revisa los datos antes de enviar.</string>
+    <string name="incidencia_btn_submit">Enviar incidencia</string>
+
+    <!-- Barra de Navegación Inferior -->
+    <string name="nav_llaves">Llaves</string>
+    <string name="nav_nfc">NFC</string>
+    <string name="nav_prestamos">Préstamos</string>
+    <string name="nav_incidencias">Incidencias</string>
+
+    <!-- Launcher -->
+    <string name="launcher_title">Launcher</string>
+    <string name="launcher_screen1_title">1. Login</string>
+    <string name="launcher_screen2_title">2. Panel Principal y Consulta de Llaves</string>
+    <string name="launcher_screen3_title">3. Préstamos Activos y Devolución</string>
+    <string name="launcher_screen4_title">4. Búsqueda y Lectura NFC</string>
+    <string name="launcher_screen5_title">5. Reporte de Incidencias</string>
+    <string name="launcher_snackbar_pending">Esta pantalla estará disponible en la siguiente versión</string>
 </resources>
