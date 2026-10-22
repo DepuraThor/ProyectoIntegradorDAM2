@@ -20,7 +20,10 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProyectoIntegradorTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LoginHeaderScreen(modifier = Modifier.padding(innerPadding))
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
                 }
             }
         }
