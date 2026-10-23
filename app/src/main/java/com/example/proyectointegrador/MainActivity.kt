@@ -55,7 +55,8 @@ import kotlinx.coroutines.launch
 private enum class AppScreen {
     LAUNCHER,
     LOGIN,
-    NFC
+    NFC,
+    PRESTAMOS_ACTIVOS
 }
 
 class MainActivity : ComponentActivity() {
@@ -90,6 +91,7 @@ fun MainAppHost(
             LauncherScreen(
                 onOpenLogin = { currentScreen = AppScreen.LOGIN },
                 onOpenConsultaLlaves = onOpenConsultaLlavesActivity,
+                onOpenPrestamosActivos = { currentScreen = AppScreen.PRESTAMOS_ACTIVOS },
                 onOpenNfc = { currentScreen = AppScreen.NFC },
                 onOpenIncidencias = onOpenIncidenciasActivity
             )
@@ -142,6 +144,10 @@ fun MainAppHost(
                 }
             }
         }
+        AppScreen.PRESTAMOS_ACTIVOS -> {
+            BackHandler { currentScreen = AppScreen.LAUNCHER }
+            PrestamosActivosScreen()
+        }
     }
 }
 
@@ -150,6 +156,7 @@ fun MainAppHost(
 fun LauncherScreen(
     onOpenLogin: () -> Unit = {},
     onOpenConsultaLlaves: () -> Unit = {},
+    onOpenPrestamosActivos: () -> Unit = {},
     onOpenNfc: () -> Unit = {},
     onOpenIncidencias: () -> Unit = {}
 ) {
@@ -210,8 +217,8 @@ fun LauncherScreen(
             LauncherButton(
                 text = stringResource(R.string.launcher_screen3_title),
                 icon = Icons.Default.Schedule,
-                isActive = false,
-                onClick = { showPendingSnackbar() }
+                isActive = true,
+                onClick = onOpenPrestamosActivos
             )
 
             // Botón 4: Búsqueda y Lectura NFC
