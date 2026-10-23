@@ -1,4 +1,4 @@
-package com.example.proyectointegrador.ui.theme
+package com.example.proyectointegrador
 
 import android.os.Bundle
 import com.example.proyectointegrador.R
@@ -52,7 +52,7 @@ class ConsultaLlaves : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            ProyectoIntegradorTheme {
+            _root_ide_package_.com.example.proyectointegrador.ui.theme.ProyectoIntegradorTheme {
                 ConsultaLlavesScreen()
             }
         }
@@ -306,7 +306,7 @@ private fun androidx.compose.foundation.layout.RowScope.BottomItem(
 @Preview(showBackground = true)
 @Composable
 fun ConsultaLlavesPreview() {
-    ProyectoIntegradorTheme {
+    _root_ide_package_.com.example.proyectointegrador.ui.theme.ProyectoIntegradorTheme {
         ConsultaLlavesScreen()
     }
 }

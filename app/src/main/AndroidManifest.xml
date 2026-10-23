@@ -29,6 +29,12 @@
             android:label="@string/incidencia_title"
             android:theme="@style/Theme.ProyectoIntegrador"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".ConsultaLlaves"
+            android:exported="false"
+            android:label="@string/consulta_title"
+            android:theme="@style/Theme.ProyectoIntegrador"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

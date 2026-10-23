@@ -65,6 +65,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             ProyectoIntegradorTheme {
                 MainAppHost(
+                    onOpenConsultaLlavesActivity = {
+                        startActivity(Intent(this, ConsultaLlaves::class.java))
+                    },
                     onOpenIncidenciasActivity = {
                         startActivity(Intent(this, PantallaIncidencias::class.java))
                     }
@@ -77,6 +80,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppHost(
+    onOpenConsultaLlavesActivity: () -> Unit = {},
     onOpenIncidenciasActivity: () -> Unit = {}
 ) {
     var currentScreen by remember { mutableStateOf(AppScreen.LAUNCHER) }
@@ -85,6 +89,7 @@ fun MainAppHost(
         AppScreen.LAUNCHER -> {
             LauncherScreen(
                 onOpenLogin = { currentScreen = AppScreen.LOGIN },
+                onOpenConsultaLlaves = onOpenConsultaLlavesActivity,
                 onOpenNfc = { currentScreen = AppScreen.NFC },
                 onOpenIncidencias = onOpenIncidenciasActivity
             )
@@ -144,6 +149,7 @@ fun MainAppHost(
 @Composable
 fun LauncherScreen(
     onOpenLogin: () -> Unit = {},
+    onOpenConsultaLlaves: () -> Unit = {},
     onOpenNfc: () -> Unit = {},
     onOpenIncidencias: () -> Unit = {}
 ) {
@@ -196,8 +202,8 @@ fun LauncherScreen(
             LauncherButton(
                 text = stringResource(R.string.launcher_screen2_title),
                 icon = Icons.Default.Key,
-                isActive = false,
-                onClick = { showPendingSnackbar() }
+                isActive = true,
+                onClick = onOpenConsultaLlaves
             )
 
             // Botón 3: Préstamos Activos y Devolución
