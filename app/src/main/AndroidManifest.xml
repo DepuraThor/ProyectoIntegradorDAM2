@@ -23,6 +23,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PantallaIncidencias"
+            android:exported="false"
+            android:label="@string/incidencia_title"
+            android:theme="@style/Theme.ProyectoIntegrador"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

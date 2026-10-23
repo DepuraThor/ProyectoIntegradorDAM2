@@ -1,3 +1,56 @@
 <resources>
-    <string name="app_name">ProyectoIntegrador</string>
+    <string name="app_name">Gestión de Llaves U-tad</string>
+    <string name="login_header_tag">01 / Acceso</string>
+    <string name="institutional_brand">// U-tad</string>
+    <string name="module_title">Gestión de llaves</string>
+    <string name="logo_content_description">Logotipo oficial de la institución U-tad</string>
+
+    <!-- Header & Navigation -->
+    <string name="brand_header">U-tad / Llaves</string>
+    <string name="avatar_initials">RR</string>
+    <string name="cd_back">Volver al menú principal</string>
+
+    <!-- Pantalla 2: Consulta de llaves (Esqueleto Visual) -->
+    <string name="consulta_title">Consulta de llaves</string>
+    <string name="consulta_subtitle">Encuentra el aula que necesitas.</string>
+    <string name="consulta_search_hint">Buscar aula o número de llave</string>
+    <string name="consulta_available_count">12</string>
+    <string name="consulta_available_label">Disponibles</string>
+    <string name="consulta_loaned_count">4</string>
+    <string name="consulta_loaned_label">Prestadas</string>
+    <string name="consulta_section">Llaves del centro</string>
+    <string name="key_aula_101">Aula 101</string>
+    <string name="key_aula_102">Aula 102</string>
+    <string name="key_lab_3">Laboratorio 3</string>
+    <string name="status_disponible">Disponible</string>
+    <string name="status_prestada">Prestada</string>
+
+    <!-- Pantalla 5: Reportar Incidencia (Esqueleto Visual) -->
+    <string name="incidencia_title">Reportar incidencia</string>
+    <string name="incidencia_subtitle">Cuéntanos qué ha ocurrido.</string>
+    <string name="incidencia_label_key">Llave o aula</string>
+    <string name="incidencia_value_key">Aula 102 · L-002</string>
+    <string name="incidencia_label_type">Tipo de incidencia</string>
+    <string name="incidencia_type_desperfecto">Desperfecto</string>
+    <string name="incidencia_type_perdida">Pérdida</string>
+    <string name="incidencia_label_desc">Descripción</string>
+    <string name="incidencia_placeholder_desc">Describe el problema de la llave…</string>
+    <string name="incidencia_char_counter">0 / 500 caracteres</string>
+    <string name="incidencia_helper_text">Revisa los datos antes de enviar.</string>
+    <string name="incidencia_btn_submit">Enviar incidencia</string>
+
+    <!-- Barra de Navegación Inferior -->
+    <string name="nav_llaves">Llaves</string>
+    <string name="nav_nfc">NFC</string>
+    <string name="nav_prestamos">Préstamos</string>
+    <string name="nav_incidencias">Incidencias</string>
+
+    <!-- Launcher -->
+    <string name="launcher_title">Launcher</string>
+    <string name="launcher_screen1_title">1. Login</string>
+    <string name="launcher_screen2_title">2. Panel Principal y Consulta de Llaves</string>
+    <string name="launcher_screen3_title">3. Préstamos Activos y Devolución</string>
+    <string name="launcher_screen4_title">4. Búsqueda y Lectura NFC</string>
+    <string name="launcher_screen5_title">5. Reporte de Incidencias</string>
+    <string name="launcher_snackbar_pending">Esta pantalla estará disponible en la siguiente versión</string>
 </resources>
