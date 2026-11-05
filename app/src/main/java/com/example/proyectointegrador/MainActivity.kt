@@ -63,14 +63,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             ProyectoIntegradorTheme {
                 MainAppHost(
                     onOpenConsultaLlavesActivity = {
-                        startActivity(Intent(this, ConsultaLlaves::class.java))
+                        startActivity(
+                            Intent(this, ConsultaLlaves::class.java)
+                        )
                     },
                     onOpenIncidenciasActivity = {
-                        startActivity(Intent(this, PantallaIncidencias::class.java))
+                        startActivity(
+                            Intent(this, PantallaIncidencias::class.java)
+                        )
                     }
                 )
             }
