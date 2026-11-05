@@ -1,7 +1,5 @@
 package com.example.proyectointegrador
 
-
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -23,16 +21,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-
-
+import com.example.proyectointegrador.ui.theme.Superficie
+import com.example.proyectointegrador.ui.theme.AzulPrincipal
+import com.example.proyectointegrador.ui.theme.AzulSuave
+import com.example.proyectointegrador.ui.theme.TextoPrincipal
+import com.example.proyectointegrador.ui.theme.TextoSecundario
+import com.example.proyectointegrador.ui.theme.CamposYTarjetas
+import com.example.proyectointegrador.ui.theme.Blanco
+import com.example.proyectointegrador.ui.theme.ProyectoIntegradorTheme
 
 @Composable
 fun PrestamosActivosScreen() {
 
     Scaffold(
-        containerColor = _root_ide_package_.com.example.proyectointegrador.ui.theme.Superficie,
+        containerColor = Superficie,
         bottomBar = {
-            NavigationBar(containerColor = _root_ide_package_.com.example.proyectointegrador.ui.theme.Superficie) {
+            NavigationBar(containerColor = Superficie) {
                 MenuPrestamos(Icons.Default.VpnKey, "Llaves", false)
                 MenuPrestamos(Icons.Default.Nfc, "NFC", false)
                 MenuPrestamos(Icons.Default.Replay, "Préstamos", true)
@@ -61,17 +65,17 @@ fun PrestamosActivosScreen() {
                 Text(
                     "U-tad / Llaves",
                     style = MaterialTheme.typography.labelLarge,
-                    color = _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulPrincipal
+                    color = AzulPrincipal
                 )
 
                 Box(
                     Modifier.size(40.dp)
-                        .background(_root_ide_package_.com.example.proyectointegrador.ui.theme.AzulSuave, CircleShape),
+                        .background(AzulSuave, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
                         "RR",
-                        color = _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulPrincipal,
+                        color = AzulPrincipal,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -83,7 +87,7 @@ fun PrestamosActivosScreen() {
             Text(
                 "Préstamos activos",
                 style = MaterialTheme.typography.headlineMedium,
-                color = _root_ide_package_.com.example.proyectointegrador.ui.theme.TextoPrincipal
+                color = TextoPrincipal
             )
 
             Spacer(Modifier.height(8.dp))
@@ -91,7 +95,7 @@ fun PrestamosActivosScreen() {
             Text(
                 "Consulta y devuelve las llaves.",
                 style = MaterialTheme.typography.bodyLarge,
-                color = _root_ide_package_.com.example.proyectointegrador.ui.theme.TextoSecundario
+                color = TextoSecundario
             )
 
             Spacer(Modifier.height(26.dp))
@@ -101,7 +105,7 @@ fun PrestamosActivosScreen() {
                 Modifier.fillMaxWidth()
                     .height(52.dp)
                     .background(
-                        _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulSuave,
+                        AzulSuave,
                         RoundedCornerShape(12.dp)
                     )
                     .padding(16.dp),
@@ -109,7 +113,7 @@ fun PrestamosActivosScreen() {
             ) {
                 Text(
                     "2 llaves pendientes de devolución",
-                    color = _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulPrincipal,
+                    color = AzulPrincipal,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -145,7 +149,7 @@ fun TarjetaPrestamo(
     Column(
         Modifier.fillMaxWidth()
             .background(
-                _root_ide_package_.com.example.proyectointegrador.ui.theme.CamposYTarjetas,
+                CamposYTarjetas,
                 RoundedCornerShape(16.dp)
             )
             .border(
@@ -163,7 +167,7 @@ fun TarjetaPrestamo(
             Icon(
                 Icons.Default.VpnKey,
                 contentDescription = null,
-                tint = _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulPrincipal,
+                tint = AzulPrincipal,
                 modifier = Modifier.size(44.dp)
             )
 
@@ -172,7 +176,7 @@ fun TarjetaPrestamo(
             Text(
                 aula,
                 style = MaterialTheme.typography.titleMedium,
-                color = _root_ide_package_.com.example.proyectointegrador.ui.theme.TextoPrincipal
+                color = TextoPrincipal
             )
         }
 
@@ -181,7 +185,7 @@ fun TarjetaPrestamo(
         Text(
             "Docente: $docente",
             style = MaterialTheme.typography.bodyLarge,
-            color = _root_ide_package_.com.example.proyectointegrador.ui.theme.TextoPrincipal
+            color = TextoPrincipal
         )
 
         Spacer(Modifier.height(8.dp))
@@ -189,7 +193,7 @@ fun TarjetaPrestamo(
         Text(
             "Préstamo: Hoy · $hora",
             style = MaterialTheme.typography.bodyMedium,
-            color = _root_ide_package_.com.example.proyectointegrador.ui.theme.TextoSecundario
+            color = TextoSecundario
         )
 
         Spacer(Modifier.height(16.dp))
@@ -199,7 +203,7 @@ fun TarjetaPrestamo(
             Modifier.fillMaxWidth()
                 .height(44.dp)
                 .background(
-                    _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulPrincipal,
+                    AzulPrincipal,
                     RoundedCornerShape(12.dp)
                 )
                 .padding(horizontal = 16.dp),
@@ -207,7 +211,7 @@ fun TarjetaPrestamo(
         ) {
             Text(
                 "Devolver llave",
-                color = _root_ide_package_.com.example.proyectointegrador.ui.theme.Blanco,
+                color = Blanco,
                 style = MaterialTheme.typography.labelLarge
             )
         }
@@ -237,11 +241,11 @@ fun RowScope.MenuPrestamos(
             )
         },
         colors = NavigationBarItemDefaults.colors(
-            selectedIconColor = _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulPrincipal,
-            selectedTextColor = _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulPrincipal,
-            indicatorColor = _root_ide_package_.com.example.proyectointegrador.ui.theme.AzulSuave,
-            unselectedIconColor = _root_ide_package_.com.example.proyectointegrador.ui.theme.TextoSecundario,
-            unselectedTextColor = _root_ide_package_.com.example.proyectointegrador.ui.theme.TextoSecundario
+            selectedIconColor = AzulPrincipal,
+            selectedTextColor = AzulPrincipal,
+            indicatorColor = AzulSuave,
+            unselectedIconColor = TextoSecundario,
+            unselectedTextColor = TextoSecundario
         )
     )
 }
@@ -249,7 +253,7 @@ fun RowScope.MenuPrestamos(
 @Preview(showBackground = true)
 @Composable
 fun PrestamosActivosPreview() {
-    _root_ide_package_.com.example.proyectointegrador.ui.theme.ProyectoIntegradorTheme {
+    ProyectoIntegradorTheme {
         PrestamosActivosScreen()
     }
 }
