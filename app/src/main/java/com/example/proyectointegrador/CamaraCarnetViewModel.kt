@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.asStateFlow
 sealed interface CamaraCarnetUiState {
     object SinPermiso : CamaraCarnetUiState
     object Escaneando : CamaraCarnetUiState
-
+//5
     data class CodigoLeido(
         val codigoProfesor: String
     ) : CamaraCarnetUiState

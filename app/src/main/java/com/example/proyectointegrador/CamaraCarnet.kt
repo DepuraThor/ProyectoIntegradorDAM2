@@ -184,7 +184,7 @@ private fun VisorCarnet(
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
-
+    // si
     val onDetectadoActual by rememberUpdatedState(onDetectado)
     val onErrorActual by rememberUpdatedState(onError)
 
