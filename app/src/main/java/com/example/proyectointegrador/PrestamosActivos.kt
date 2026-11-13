@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +22,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectointegrador.ui.theme.Superficie
 import com.example.proyectointegrador.ui.theme.AzulPrincipal
 import com.example.proyectointegrador.ui.theme.AzulSuave
@@ -29,9 +32,14 @@ import com.example.proyectointegrador.ui.theme.TextoSecundario
 import com.example.proyectointegrador.ui.theme.CamposYTarjetas
 import com.example.proyectointegrador.ui.theme.Blanco
 import com.example.proyectointegrador.ui.theme.ProyectoIntegradorTheme
+import com.example.proyectointegrador.ui.viewmodels.PrestamoView
+import com.example.proyectointegrador.ui.viewmodels.PrestamoUiState
 
 @Composable
-fun PrestamosActivosScreen() {
+fun PrestamosActivosScreen(
+    viewModel: PrestamoView = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         containerColor = Superficie,
@@ -118,7 +126,68 @@ fun PrestamosActivosScreen() {
                 )
             }
 
-            Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.height(16.dp))
+
+            when (val state = uiState) {
+                is PrestamoUiState.Confirmacion -> {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = AzulSuave),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                    ) {
+                        Column(Modifier.padding(16.dp)) {
+                            Text("Confirmar registro de préstamo", fontWeight = FontWeight.Bold, color = AzulPrincipal)
+                            Spacer(Modifier.height(4.dp))
+                            Text("Docente / Código: ${state.codigoProfesor}", color = TextoPrincipal)
+                            Text("Llave NFC: ${state.nfcLlave}", color = TextoPrincipal)
+                            Text("Aula: ${state.aula}", color = TextoPrincipal)
+                            Spacer(Modifier.height(12.dp))
+                            Button(
+                                onClick = { viewModel.confirmarPrestamo() },
+                                colors = ButtonDefaults.buttonColors(containerColor = AzulPrincipal)
+                            ) {
+                                Text("Confirmar Préstamo")
+                            }
+                        }
+                    }
+                }
+                is PrestamoUiState.Exito -> {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFDCFCE7)),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                    ) {
+                        Row(
+                            Modifier.padding(16.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(state.mensaje, color = Color(0xFF166534), fontWeight = FontWeight.Bold)
+                            TextButton(onClick = { viewModel.reiniciarFlujo() }) {
+                                Text("Aceptar")
+                            }
+                        }
+                    }
+                }
+                is PrestamoUiState.Error -> {
+                    Card(
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFFFEE2E2)),
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
+                    ) {
+                        Row(
+                            Modifier.padding(16.dp).fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(state.error, color = Color(0xFF991B1B), fontWeight = FontWeight.Bold)
+                            TextButton(onClick = { viewModel.reiniciarFlujo() }) {
+                                Text("Reintentar")
+                            }
+                        }
+                    }
+                }
+                else -> {}
+            }
+
+            Spacer(Modifier.height(8.dp))
 
             // Primera tarjeta
             TarjetaPrestamo(

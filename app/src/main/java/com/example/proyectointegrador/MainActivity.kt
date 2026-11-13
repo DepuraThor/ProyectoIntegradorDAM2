@@ -51,7 +51,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectointegrador.ui.theme.ProyectoIntegradorTheme
+import com.example.proyectointegrador.ui.viewmodels.PrestamoView
 import kotlinx.coroutines.launch
 
 private enum class AppScreen {
@@ -65,6 +68,7 @@ private enum class AppScreen {
 class MainActivity : ComponentActivity() {
 
     private var nfcAdapter: NfcAdapter? = null
+    private var prestamoViewModelRef: PrestamoView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,8 +77,12 @@ class MainActivity : ComponentActivity() {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
         setContent {
+            val prestamoViewModel: PrestamoView = viewModel()
+            prestamoViewModelRef = prestamoViewModel
+
             ProyectoIntegradorTheme {
                 MainAppHost(
+                    prestamoViewModel = prestamoViewModel,
                     onOpenConsultaLlavesActivity = {
                         startActivity(
                             Intent(this, ConsultaLlaves::class.java)
@@ -112,7 +120,7 @@ class MainActivity : ComponentActivity() {
             NfcAdapter.ACTION_TECH_DISCOVERED == intent.action) {
             val tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)
             val hexId = tagId?.joinToString(":") { "%02X".format(it) } ?: "UNKNOWN_TAG"
-            // Tag NFC detectado automáticamente en primer plano
+            prestamoViewModelRef?.onNfcTagDetected(hexId)
         }
     }
 }
@@ -120,10 +128,12 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainAppHost(
+    prestamoViewModel: PrestamoView = viewModel(),
     onOpenConsultaLlavesActivity: () -> Unit = {},
     onOpenIncidenciasActivity: () -> Unit = {}
 ) {
     var currentScreen by remember { mutableStateOf(AppScreen.LAUNCHER) }
+    val prestamoUiState by prestamoViewModel.uiState.collectAsStateWithLifecycle()
     var codigoCarnetEscaneado by remember { mutableStateOf<String?>(null) }
 
     when (currentScreen) {
@@ -168,6 +178,7 @@ fun MainAppHost(
             CamaraCarnet(
                 onCodigoLeido = { codigo ->
                     codigoCarnetEscaneado = codigo
+                    prestamoViewModel.onBarcodeScanned(codigo)
                     currentScreen = AppScreen.LOGIN
                 },
                 onCancelar = {
@@ -201,7 +212,7 @@ fun MainAppHost(
         }
         AppScreen.PRESTAMOS_ACTIVOS -> {
             BackHandler { currentScreen = AppScreen.LAUNCHER }
-            PrestamosActivosScreen()
+            PrestamosActivosScreen(viewModel = prestamoViewModel)
         }
     }
 }

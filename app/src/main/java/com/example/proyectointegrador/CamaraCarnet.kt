@@ -29,14 +29,18 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.mlkit.vision.barcode.BarcodeScanning
 
 @Composable
 fun CamaraCarnet(
     onCodigoLeido: (String) -> Unit,
     onCancelar: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: CamaraCarnetViewModel = viewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -55,36 +59,29 @@ fun CamaraCarnet(
         mutableStateOf(false)
     }
 
-    var codigoLeido by rememberSaveable {
-        mutableStateOf<String?>(null)
-    }
-
-    var mensaje by remember {
-        mutableStateOf("Enfoca el código del carné del alumno")
-    }
-
     val onCodigoActual by rememberUpdatedState(onCodigoLeido)
 
-    // Solicita el permiso y recibe la respuesta de Android.
     val solicitarPermiso = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { concedido ->
         permisoConcedido = concedido
+        viewModel.actualizarPermiso(concedido)
     }
 
-    // Se ejecuta al entrar en la pantalla.
     LaunchedEffect(Unit) {
+        viewModel.actualizarPermiso(permisoConcedido)
         if (!permisoConcedido && !permisoSolicitado) {
             permisoSolicitado = true
             solicitarPermiso.launch(Manifest.permission.CAMERA)
         }
     }
 
-    // Actualiza el permiso al regresar desde los ajustes.
     DisposableEffect(lifecycleOwner, context) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                permisoConcedido = tienePermiso()
+                val concedido = tienePermiso()
+                permisoConcedido = concedido
+                viewModel.actualizarPermiso(concedido)
             }
         }
 
@@ -92,6 +89,13 @@ fun CamaraCarnet(
 
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    LaunchedEffect(uiState) {
+        if (uiState is CamaraCarnetUiState.CodigoLeido) {
+            val codigo = (uiState as CamaraCarnetUiState.CodigoLeido).codigoProfesor
+            onCodigoActual(codigo)
         }
     }
 
@@ -105,18 +109,15 @@ fun CamaraCarnet(
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        when {
-            codigoLeido != null -> {
+        when (val state = uiState) {
+            is CamaraCarnetUiState.CodigoLeido -> {
                 Text("Código leído correctamente")
-
                 Spacer(Modifier.height(8.dp))
-
-                Text(codigoLeido.orEmpty())
+                Text(state.codigoProfesor)
             }
 
-            permisoConcedido -> {
-                Text(mensaje)
-
+            is CamaraCarnetUiState.Escaneando -> {
+                Text("Enfoca el código del carné del alumno/profesor")
                 Spacer(Modifier.height(16.dp))
 
                 VisorCarnet(
@@ -124,27 +125,29 @@ fun CamaraCarnet(
                         .fillMaxWidth()
                         .weight(1f),
                     onError = { error ->
-                        mensaje = error
+                        viewModel.registrarError(error)
                     },
                     onDetectado = { codigo ->
-                        codigoLeido = codigo
-                        onCodigoActual(codigo)
+                        viewModel.registrarCodigo(codigo)
                     }
                 )
             }
 
-            else -> {
-                Text(
-                    "Necesitamos permiso de cámara para escanear el carné."
-                )
+            is CamaraCarnetUiState.Error -> {
+                Text("Error: ${state.mensaje}")
+                Spacer(Modifier.height(16.dp))
+                Button(onClick = { viewModel.reiniciar(permisoConcedido) }) {
+                    Text("Reintentar")
+                }
+            }
 
+            is CamaraCarnetUiState.SinPermiso -> {
+                Text("Necesitamos permiso de cámara para escanear el carné.")
                 Spacer(Modifier.height(16.dp))
 
                 Button(
                     onClick = {
-                        solicitarPermiso.launch(
-                            Manifest.permission.CAMERA
-                        )
+                        solicitarPermiso.launch(Manifest.permission.CAMERA)
                     }
                 ) {
                     Text("Permitir cámara")
@@ -156,7 +159,6 @@ fun CamaraCarnet(
                             Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                             Uri.parse("package:${context.packageName}")
                         )
-
                         context.startActivity(intent)
                     }
                 ) {
@@ -168,9 +170,7 @@ fun CamaraCarnet(
         Spacer(Modifier.height(16.dp))
 
         TextButton(onClick = onCancelar) {
-            Text(
-                if (codigoLeido == null) "Cancelar" else "Volver"
-            )
+            Text(if (uiState is CamaraCarnetUiState.CodigoLeido) "Volver" else "Cancelar")
         }
     }
 }
