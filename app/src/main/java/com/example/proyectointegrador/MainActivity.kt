@@ -1,13 +1,16 @@
 package com.example.proyectointegrador
 
+import android.Manifest
 import android.app.PendingIntent
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.nfc.NfcAdapter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,6 +55,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.proyectointegrador.ui.theme.ProyectoIntegradorTheme
@@ -72,11 +76,19 @@ class MainActivity : ComponentActivity() {
     private var prestamoViewModelRef: PrestamoView? = null
     private var nfcCallback: ((String) -> Unit)? = null
 
+    private val requestCameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ -> }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this)
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
 
         setContent {
             val prestamoViewModel: PrestamoView = viewModel()
