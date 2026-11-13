@@ -48,6 +48,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -151,12 +152,13 @@ fun MainAppHost(
     onOpenIncidenciasActivity: () -> Unit = {},
     onRegisterNfcCallback: (((String) -> Unit) -> Unit)? = null
 ) {
-    var currentScreen by remember { mutableStateOf(AppScreen.LAUNCHER) }
+    var currentScreenName by rememberSaveable { mutableStateOf(AppScreen.LAUNCHER.name) }
+    val currentScreen = AppScreen.valueOf(currentScreenName)
     val prestamoUiState by prestamoViewModel.uiState.collectAsStateWithLifecycle()
 
     fun handleNfcDetected(nfcId: String) {
         prestamoViewModel.onNfcTagDetected(nfcId)
-        currentScreen = AppScreen.CAMARA_CARNET
+        currentScreenName = AppScreen.CAMARA_CARNET.name
     }
 
     LaunchedEffect(Unit) {
@@ -168,21 +170,21 @@ fun MainAppHost(
     when (currentScreen) {
         AppScreen.LAUNCHER -> {
             LauncherScreen(
-                onOpenLogin = { currentScreen = AppScreen.LOGIN },
+                onOpenLogin = { currentScreenName = AppScreen.LOGIN.name },
                 onOpenConsultaLlaves = onOpenConsultaLlavesActivity,
-                onOpenPrestamosActivos = { currentScreen = AppScreen.PRESTAMOS_ACTIVOS },
-                onOpenNfc = { currentScreen = AppScreen.NFC },
+                onOpenPrestamosActivos = { currentScreenName = AppScreen.PRESTAMOS_ACTIVOS.name },
+                onOpenNfc = { currentScreenName = AppScreen.NFC.name },
                 onOpenIncidencias = onOpenIncidenciasActivity
             )
         }
         AppScreen.LOGIN -> {
-            BackHandler { currentScreen = AppScreen.LAUNCHER }
+            BackHandler { currentScreenName = AppScreen.LAUNCHER.name }
             Scaffold(
                 topBar = {
                     TopAppBar(
                         title = { Text(stringResource(R.string.launcher_screen1_title), fontWeight = FontWeight.Bold) },
                         navigationIcon = {
-                            IconButton(onClick = { currentScreen = AppScreen.LAUNCHER }) {
+                            IconButton(onClick = { currentScreenName = AppScreen.LAUNCHER.name }) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                     contentDescription = stringResource(R.string.cd_back),
@@ -200,25 +202,25 @@ fun MainAppHost(
             }
         }
         AppScreen.CAMARA_CARNET -> {
-            BackHandler { currentScreen = AppScreen.NFC }
+            BackHandler { currentScreenName = AppScreen.NFC.name }
             CamaraCarnet(
                 onCodigoLeido = { codigo ->
                     prestamoViewModel.onBarcodeScanned(codigo)
-                    currentScreen = AppScreen.PRESTAMOS_ACTIVOS
+                    currentScreenName = AppScreen.PRESTAMOS_ACTIVOS.name
                 },
                 onCancelar = {
-                    currentScreen = AppScreen.NFC
+                    currentScreenName = AppScreen.NFC.name
                 }
             )
         }
         AppScreen.NFC -> {
-            BackHandler { currentScreen = AppScreen.LAUNCHER }
+            BackHandler { currentScreenName = AppScreen.LAUNCHER.name }
             Scaffold(
                 topBar = {
                     TopAppBar(
                         title = { Text(stringResource(R.string.launcher_screen4_title), fontWeight = FontWeight.Bold) },
                         navigationIcon = {
-                            IconButton(onClick = { currentScreen = AppScreen.LAUNCHER }) {
+                            IconButton(onClick = { currentScreenName = AppScreen.LAUNCHER.name }) {
                                 Icon(
                                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                     contentDescription = stringResource(R.string.cd_back),
@@ -240,7 +242,7 @@ fun MainAppHost(
             }
         }
         AppScreen.PRESTAMOS_ACTIVOS -> {
-            BackHandler { currentScreen = AppScreen.LAUNCHER }
+            BackHandler { currentScreenName = AppScreen.LAUNCHER.name }
             PrestamosActivosScreen(viewModel = prestamoViewModel)
         }
     }
