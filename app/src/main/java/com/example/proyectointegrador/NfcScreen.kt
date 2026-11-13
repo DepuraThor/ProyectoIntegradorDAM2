@@ -28,7 +28,9 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NfcScreen() {
+fun NfcScreen(
+    onNfcDetected: (String) -> Unit = {}
+) {
 
     // Paleta de colores necesaria.
     val primaryBlue = Color(0xFF2B5BB9)
@@ -140,7 +142,7 @@ fun NfcScreen() {
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(40.dp))
+                    Spacer(modifier = Modifier.height(32.dp))
 
                     // Texto informativo inferiores de la tarjeta.
                     Text(
@@ -150,6 +152,21 @@ fun NfcScreen() {
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Button(
+                        onClick = { onNfcDetected("BE205-TAG-NFC") },
+                        colors = ButtonDefaults.buttonColors(containerColor = primaryBlue),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.fillMaxWidth(0.9f).height(48.dp)
+                    ) {
+                        Text(
+                            text = "Simular Lectura NFC y Abrir Cámara",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
         }

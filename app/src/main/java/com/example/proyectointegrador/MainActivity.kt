@@ -40,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -69,6 +70,7 @@ class MainActivity : ComponentActivity() {
 
     private var nfcAdapter: NfcAdapter? = null
     private var prestamoViewModelRef: PrestamoView? = null
+    private var nfcCallback: ((String) -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,6 +94,9 @@ class MainActivity : ComponentActivity() {
                         startActivity(
                             Intent(this, PantallaIncidencias::class.java)
                         )
+                    },
+                    onRegisterNfcCallback = { callback ->
+                        nfcCallback = callback
                     }
                 )
             }
@@ -119,8 +124,9 @@ class MainActivity : ComponentActivity() {
         if (NfcAdapter.ACTION_TAG_DISCOVERED == intent.action ||
             NfcAdapter.ACTION_TECH_DISCOVERED == intent.action) {
             val tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)
-            val hexId = tagId?.joinToString(":") { "%02X".format(it) } ?: "UNKNOWN_TAG"
+            val hexId = tagId?.joinToString(":") { "%02X".format(it) } ?: "TAG-NFC-BE205"
             prestamoViewModelRef?.onNfcTagDetected(hexId)
+            nfcCallback?.invoke(hexId)
         }
     }
 }
@@ -130,11 +136,22 @@ class MainActivity : ComponentActivity() {
 fun MainAppHost(
     prestamoViewModel: PrestamoView = viewModel(),
     onOpenConsultaLlavesActivity: () -> Unit = {},
-    onOpenIncidenciasActivity: () -> Unit = {}
+    onOpenIncidenciasActivity: () -> Unit = {},
+    onRegisterNfcCallback: (((String) -> Unit) -> Unit)? = null
 ) {
     var currentScreen by remember { mutableStateOf(AppScreen.LAUNCHER) }
     val prestamoUiState by prestamoViewModel.uiState.collectAsStateWithLifecycle()
-    var codigoCarnetEscaneado by remember { mutableStateOf<String?>(null) }
+
+    fun handleNfcDetected(nfcId: String) {
+        prestamoViewModel.onNfcTagDetected(nfcId)
+        currentScreen = AppScreen.CAMARA_CARNET
+    }
+
+    LaunchedEffect(Unit) {
+        onRegisterNfcCallback?.invoke { nfcId ->
+            handleNfcDetected(nfcId)
+        }
+    }
 
     when (currentScreen) {
         AppScreen.LAUNCHER -> {
@@ -171,15 +188,14 @@ fun MainAppHost(
             }
         }
         AppScreen.CAMARA_CARNET -> {
-            BackHandler { currentScreen = AppScreen.LOGIN }
+            BackHandler { currentScreen = AppScreen.NFC }
             CamaraCarnet(
                 onCodigoLeido = { codigo ->
-                    codigoCarnetEscaneado = codigo
                     prestamoViewModel.onBarcodeScanned(codigo)
-                    currentScreen = AppScreen.LOGIN
+                    currentScreen = AppScreen.PRESTAMOS_ACTIVOS
                 },
                 onCancelar = {
-                    currentScreen = AppScreen.LOGIN
+                    currentScreen = AppScreen.NFC
                 }
             )
         }
@@ -203,7 +219,11 @@ fun MainAppHost(
                 }
             ) { innerPadding ->
                 Box(modifier = Modifier.padding(innerPadding)) {
-                    NfcScreen()
+                    NfcScreen(
+                        onNfcDetected = { nfcId ->
+                            handleNfcDetected(nfcId)
+                        }
+                    )
                 }
             }
         }

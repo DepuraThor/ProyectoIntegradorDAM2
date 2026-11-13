@@ -7,8 +7,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 sealed interface PrestamoUiState {
-    object EscaneandoProfesor : PrestamoUiState
+    object Inicio : PrestamoUiState
     object EscaneandoLlaveNfc : PrestamoUiState
+    object EscaneandoProfesor : PrestamoUiState
     data class Confirmacion(
         val codigoProfesor: String,
         val nfcLlave: String,
@@ -20,7 +21,7 @@ sealed interface PrestamoUiState {
 
 class PrestamoView : ViewModel() {
 
-    private val _uiState = MutableStateFlow<PrestamoUiState>(PrestamoUiState.EscaneandoProfesor)
+    private val _uiState = MutableStateFlow<PrestamoUiState>(PrestamoUiState.Inicio)
     val uiState: StateFlow<PrestamoUiState> = _uiState.asStateFlow()
 
     var codigoProfesorCapturado: String = ""
@@ -28,37 +29,49 @@ class PrestamoView : ViewModel() {
     var nfcLlaveCapturada: String = ""
         private set
 
-    fun onBarcodeScanned(codigo: String) {
-        if (codigo.isNotBlank() && _uiState.value is PrestamoUiState.EscaneandoProfesor) {
-            codigoProfesorCapturado = codigo
-            _uiState.update { PrestamoUiState.EscaneandoLlaveNfc }
+    fun onNfcTagDetected(nfcUid: String) {
+        if (nfcUid.isNotBlank()) {
+            nfcLlaveCapturada = nfcUid
+            if (codigoProfesorCapturado.isNotEmpty()) {
+                _uiState.update {
+                    PrestamoUiState.Confirmacion(
+                        codigoProfesor = codigoProfesorCapturado,
+                        nfcLlave = nfcLlaveCapturada,
+                        aula = "BE205 - Berlín Planta 2"
+                    )
+                }
+            } else {
+                _uiState.update { PrestamoUiState.EscaneandoProfesor }
+            }
         }
     }
 
-    fun onNfcTagDetected(nfcUid: String) {
-        nfcLlaveCapturada = nfcUid
-        if (codigoProfesorCapturado.isNotEmpty()) {
-            _uiState.update {
-                PrestamoUiState.Confirmacion(
-                    codigoProfesor = codigoProfesorCapturado,
-                    nfcLlave = nfcLlaveCapturada,
-                    aula = "BE205 - Berlín Planta 2"
-                )
+    fun onBarcodeScanned(codigo: String) {
+        if (codigo.isNotBlank()) {
+            codigoProfesorCapturado = codigo
+            if (nfcLlaveCapturada.isNotEmpty()) {
+                _uiState.update {
+                    PrestamoUiState.Confirmacion(
+                        codigoProfesor = codigoProfesorCapturado,
+                        nfcLlave = nfcLlaveCapturada,
+                        aula = "BE205 - Berlín Planta 2"
+                    )
+                }
+            } else {
+                _uiState.update { PrestamoUiState.EscaneandoLlaveNfc }
             }
-        } else {
-            _uiState.update { PrestamoUiState.EscaneandoProfesor }
         }
     }
 
     fun confirmarPrestamo() {
         _uiState.update {
-            PrestamoUiState.Exito("Préstamo registrado correctamente")
+            PrestamoUiState.Exito("Préstamo registrado correctamente para la llave $nfcLlaveCapturada")
         }
     }
 
     fun reiniciarFlujo() {
         codigoProfesorCapturado = ""
         nfcLlaveCapturada = ""
-        _uiState.update { PrestamoUiState.EscaneandoProfesor }
+        _uiState.update { PrestamoUiState.Inicio }
     }
 }
