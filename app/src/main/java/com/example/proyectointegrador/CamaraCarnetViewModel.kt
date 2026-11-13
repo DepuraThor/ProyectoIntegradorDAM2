@@ -54,7 +54,7 @@ class CamaraCarnetViewModel(
 
         if (!concedido) {
             _uiState.value = CamaraCarnetUiState.SinPermiso
-        } else if (_uiState.value !is CamaraCarnetUiState.Error) {
+        } else {
             _uiState.value = CamaraCarnetUiState.Escaneando
         }
     }

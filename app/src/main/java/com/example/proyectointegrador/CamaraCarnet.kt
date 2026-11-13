@@ -69,7 +69,7 @@ fun CamaraCarnet(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.actualizarPermiso(permisoConcedido)
+        viewModel.reiniciar(permisoConcedido)
         if (!permisoConcedido && !permisoSolicitado) {
             permisoSolicitado = true
             solicitarPermiso.launch(Manifest.permission.CAMERA)
