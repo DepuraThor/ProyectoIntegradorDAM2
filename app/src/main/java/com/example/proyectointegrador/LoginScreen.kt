@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Key
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -34,18 +33,10 @@ val TextoBoton = Color(0xFFFAFBFC)
 
 @Composable
 fun LoginHeaderScreen(
-    modifier: Modifier = Modifier,
-    codigoEscaneado: String? = null,
-    onEscanearCarnet: () -> Unit = {}
+    modifier: Modifier = Modifier
 ) {
     var correo by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-
-    LaunchedEffect(codigoEscaneado) {
-        if (!codigoEscaneado.isNullOrBlank()) {
-            correo = codigoEscaneado
-        }
-    }
 
     Column(
         modifier = modifier
@@ -156,15 +147,6 @@ fun LoginHeaderScreen(
                 onValueChange = { correo = it },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("nombre@u-tad.com", color = TextoSecundario) },
-                trailingIcon = {
-                    IconButton(onClick = onEscanearCarnet) {
-                        Icon(
-                            imageVector = Icons.Default.CameraAlt,
-                            contentDescription = "Escanear carné",
-                            tint = AzulPrincipal
-                        )
-                    }
-                },
                 shape = RoundedCornerShape(12.dp),
                 colors = OutlinedTextFieldDefaults.colors(
                     unfocusedContainerColor = CampoTextoFondo,
@@ -208,32 +190,7 @@ fun LoginHeaderScreen(
                 color = TextoSecundario
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedButton(
-                onClick = onEscanearCarnet,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = AzulPrincipal
-                )
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Escanear carné con cámara",
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Button(
                 onClick = { /* Acción de Acceso */ },

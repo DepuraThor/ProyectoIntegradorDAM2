@@ -166,10 +166,7 @@ fun MainAppHost(
                 }
             ) { innerPadding ->
                 Box(modifier = Modifier.padding(innerPadding)) {
-                    LoginHeaderScreen(
-                        codigoEscaneado = codigoCarnetEscaneado,
-                        onEscanearCarnet = { currentScreen = AppScreen.CAMARA_CARNET }
-                    )
+                    LoginHeaderScreen()
                 }
             }
         }
