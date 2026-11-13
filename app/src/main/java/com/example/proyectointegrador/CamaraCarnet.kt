@@ -210,12 +210,14 @@ private fun VisorCarnet(
         var resultadoEntregado = false
 
         try {
-            controller.cameraSelector =
+            val cameraSelector = if (controller.hasCamera(CameraSelector.DEFAULT_BACK_CAMERA)) {
                 CameraSelector.DEFAULT_BACK_CAMERA
-
-            controller.setEnabledUseCases(
-                CameraController.IMAGE_ANALYSIS
-            )
+            } else if (controller.hasCamera(CameraSelector.DEFAULT_FRONT_CAMERA)) {
+                CameraSelector.DEFAULT_FRONT_CAMERA
+            } else {
+                CameraSelector.DEFAULT_BACK_CAMERA
+            }
+            controller.cameraSelector = cameraSelector
 
             val analyzer = MlKitAnalyzer(
                 listOf(scanner),
@@ -249,13 +251,6 @@ private fun VisorCarnet(
                         controller.unbind()
 
                         onDetectadoActual(codigo)
-                    } else if (
-                        resultado.getThrowable(scanner) != null
-                    ) {
-                        onErrorActual(
-                            "No se ha podido analizar la imagen. " +
-                                    "Vuelve a enfocar el código."
-                        )
                     }
                 }
             }
@@ -267,29 +262,12 @@ private fun VisorCarnet(
 
             previewView.controller = controller
             controller.bindToLifecycle(lifecycleOwner)
-
-            val inicializacion = controller.initializationFuture
-
-            inicializacion.addListener(
-                {
-                    if (vigente && !resultadoEntregado) {
-                        try {
-                            inicializacion.get()
-                        } catch (_: Exception) {
-                            onErrorActual(
-                                "No se ha podido iniciar la cámara."
-                            )
-                        }
-                    }
-                },
-                executor
-            )
         } catch (_: Exception) {
             controller.clearImageAnalysisAnalyzer()
             controller.unbind()
 
             onErrorActual(
-                "No se ha podido abrir la cámara trasera."
+                "No se ha podido abrir la cámara."
             )
         }
 
