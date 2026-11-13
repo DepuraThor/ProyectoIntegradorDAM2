@@ -58,7 +58,8 @@ private enum class AppScreen {
     LAUNCHER,
     LOGIN,
     NFC,
-    PRESTAMOS_ACTIVOS
+    PRESTAMOS_ACTIVOS,
+    CAMARA_CARNET
 }
 
 class MainActivity : ComponentActivity() {
@@ -123,6 +124,7 @@ fun MainAppHost(
     onOpenIncidenciasActivity: () -> Unit = {}
 ) {
     var currentScreen by remember { mutableStateOf(AppScreen.LAUNCHER) }
+    var codigoCarnetEscaneado by remember { mutableStateOf<String?>(null) }
 
     when (currentScreen) {
         AppScreen.LAUNCHER -> {
@@ -154,9 +156,24 @@ fun MainAppHost(
                 }
             ) { innerPadding ->
                 Box(modifier = Modifier.padding(innerPadding)) {
-                    LoginHeaderScreen()
+                    LoginHeaderScreen(
+                        codigoEscaneado = codigoCarnetEscaneado,
+                        onEscanearCarnet = { currentScreen = AppScreen.CAMARA_CARNET }
+                    )
                 }
             }
+        }
+        AppScreen.CAMARA_CARNET -> {
+            BackHandler { currentScreen = AppScreen.LOGIN }
+            CamaraCarnet(
+                onCodigoLeido = { codigo ->
+                    codigoCarnetEscaneado = codigo
+                    currentScreen = AppScreen.LOGIN
+                },
+                onCancelar = {
+                    currentScreen = AppScreen.LOGIN
+                }
+            )
         }
         AppScreen.NFC -> {
             BackHandler { currentScreen = AppScreen.LAUNCHER }
