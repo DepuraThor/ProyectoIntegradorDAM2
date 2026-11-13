@@ -1,6 +1,8 @@
 package com.example.proyectointegrador
 
+import android.app.PendingIntent
 import android.content.Intent
+import android.nfc.NfcAdapter
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -60,9 +62,14 @@ private enum class AppScreen {
 }
 
 class MainActivity : ComponentActivity() {
+
+    private var nfcAdapter: NfcAdapter? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this)
 
         setContent {
             ProyectoIntegradorTheme {
@@ -79,6 +86,32 @@ class MainActivity : ComponentActivity() {
                     }
                 )
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        nfcAdapter?.let { adapter ->
+            val intent = Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val pendingIntent = PendingIntent.getActivity(
+                this, 0, intent, PendingIntent.FLAG_MUTABLE
+            )
+            adapter.enableForegroundDispatch(this, pendingIntent, null, null)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        nfcAdapter?.disableForegroundDispatch(this)
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (NfcAdapter.ACTION_TAG_DISCOVERED == intent.action ||
+            NfcAdapter.ACTION_TECH_DISCOVERED == intent.action) {
+            val tagId = intent.getByteArrayExtra(NfcAdapter.EXTRA_ID)
+            val hexId = tagId?.joinToString(":") { "%02X".format(it) } ?: "UNKNOWN_TAG"
+            // Tag NFC detectado automáticamente en primer plano
         }
     }
 }
@@ -118,7 +151,7 @@ fun MainAppHost(
                         },
                         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background)
                     )
-                } // faksjfsjfdfdhkfjslnvcffd
+                }
             ) { innerPadding ->
                 Box(modifier = Modifier.padding(innerPadding)) {
                     LoginHeaderScreen()
